@@ -1,4 +1,7 @@
-﻿namespace ZbW.Testing.Dms.Client.ViewModels
+﻿using System;
+using ZbW.Testing.Dms.Client.Services;
+
+namespace ZbW.Testing.Dms.Client.ViewModels
 {
     using System.Collections.Generic;
 
@@ -20,6 +23,8 @@
 
         private List<string> _typItems;
 
+        private DocumentService _documentService;
+
         public SearchViewModel()
         {
             TypItems = ComboBoxItems.Typ;
@@ -27,6 +32,12 @@
             CmdSuchen = new DelegateCommand(OnCmdSuchen);
             CmdReset = new DelegateCommand(OnCmdReset);
             CmdOeffnen = new DelegateCommand(OnCmdOeffnen, OnCanCmdOeffnen);
+
+            _documentService = new DocumentService();
+
+            FilteredMetadataItems = _documentService.GetMetaDataItems();
+
+            _documentService.MetaDataItems = _documentService.GetMetaDataItems();
         }
 
         public DelegateCommand CmdOeffnen { get; }
@@ -110,17 +121,27 @@
 
         private void OnCmdOeffnen()
         {
-            // TODO: Add your Code here
+            _documentService.OpenFile(SelectedMetadataItem._path);
         }
 
         private void OnCmdSuchen()
         {
-            // TODO: Add your Code here
+            if (!string.IsNullOrEmpty(Suchbegriff) || !string.IsNullOrEmpty(SelectedTypItem))
+            {
+                FilteredMetadataItems = _documentService.FilterMetadataItems(Suchbegriff, SelectedTypItem);
+            }
+            else
+            {
+                FilteredMetadataItems = _documentService.GetMetaDataItems();
+            }
         }
 
         private void OnCmdReset()
         {
-            // TODO: Add your Code here
+            FilteredMetadataItems = _documentService.MetaDataItems;
+            Suchbegriff = "";
+            SelectedTypItem = null;
+            FilteredMetadataItems = _documentService.GetMetaDataItems();
         }
     }
 }

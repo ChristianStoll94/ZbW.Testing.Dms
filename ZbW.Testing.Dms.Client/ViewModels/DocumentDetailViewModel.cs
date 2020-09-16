@@ -1,4 +1,8 @@
-﻿namespace ZbW.Testing.Dms.Client.ViewModels
+﻿using System.Windows;
+using ZbW.Testing.Dms.Client.Model;
+using ZbW.Testing.Dms.Client.Services;
+
+namespace ZbW.Testing.Dms.Client.ViewModels
 {
     using System;
     using System.Collections.Generic;
@@ -32,12 +36,16 @@
 
         private DateTime? _valutaDatum;
 
+        private DocumentService _documentService;
+
         public DocumentDetailViewModel(string benutzer, Action navigateBack)
         {
             _navigateBack = navigateBack;
             Benutzer = benutzer;
             Erfassungsdatum = DateTime.Now;
             TypItems = ComboBoxItems.Typ;
+            _documentService = new DocumentService();
+
 
             CmdDurchsuchen = new DelegateCommand(OnCmdDurchsuchen);
             CmdSpeichern = new DelegateCommand(OnCmdSpeichern);
@@ -164,9 +172,31 @@
 
         private void OnCmdSpeichern()
         {
-            // TODO: Add your Code here
+            if (Checkparameters())
+            {
+                MetadataItem metadataItem = new MetadataItem(_bezeichnung, _selectedTypItem, _stichwoerter, _benutzer,
+                    _valutaDatum, _erfassungsdatum, _filePath);
 
-            _navigateBack();
+                Guid guid = Guid.NewGuid();
+
+                _documentService.AddFileToRepository(metadataItem, _filePath, _isRemoveFileEnabled, guid);
+                _navigateBack();
+            }
+        }
+
+        private bool Checkparameters()
+        {
+            if (_filePath == null)
+            {
+                MessageBox.Show("Kein Dokument ausgewählt");
+                return false;
+            }
+            if (_bezeichnung == null || _selectedTypItem == null)
+            {
+                MessageBox.Show("Pflichtfelder (*) müssen ausgefüllt sein");
+                return false;
+            }
+            return true;
         }
     }
 }

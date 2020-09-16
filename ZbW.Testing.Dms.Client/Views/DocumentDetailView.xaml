@@ -27,13 +27,13 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0"
-                   Text="Dokument"/>
+                   Text="Dokument*"/>
         <Button Grid.Row="0" Grid.Column="1"
                 Content="Durchsuchen"
                 Command="{Binding CmdDurchsuchen}"/>
 
         <TextBlock Grid.Row="1" Grid.Column="0"
-                   Text="Bezeichnung"/>
+                   Text="Bezeichnung*"/>
         <TextBox Grid.Row="1" Grid.Column="1"
                  Text="{Binding Bezeichnung}"/>
 
@@ -43,7 +43,7 @@
                     SelectedDate="{Binding ValutaDatum}"/>
 
         <TextBlock Grid.Row="3" Grid.Column="0"
-                   Text="Typ"/>
+                   Text="Typ*"/>
         <ComboBox Grid.Row="3" Grid.Column="1"
                   ItemsSource="{Binding TypItems}"
                   SelectedItem="{Binding SelectedTypItem}"/>
